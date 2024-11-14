@@ -22,9 +22,9 @@ export interface ApiError {
   status: number | undefined;
 }
 
-let baseUrl = "/api";
+let baseUrl = "api-photojoo:8000";
 if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-  baseUrl = "http://localhost:8000";
+  baseUrl = "https://api-photojoo.liara.run";
 }
 
 export const fetchProducts = async (
