@@ -21,7 +21,7 @@ export interface ApiError {
   status: number | undefined;
 }
 
-let baseUrl = "https://api-photojoo.liara.run";
+let baseUrl = "https://photojoo-api.liara.run";
 if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
   baseUrl = "http://localhost:8000";
 }
