@@ -10,7 +10,6 @@ import AppSpinner from "./components/AppSpinner";
 
 function App() {
   const { appState, setProducts, setReqStatus } = useContext(AppContext);
-  console.log(appState);
 
   useEffect(() => {
     const fetchItems = async () => {
