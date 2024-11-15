@@ -7,8 +7,12 @@ import Filters from "./components/Filters";
 
 function App() {
   const { appState, setProducts } = useContext(AppContext);
+  console.log(appState);
+
   useEffect(() => {
     const fetchItems = async () => {
+      console.log(appState);
+
       const res = await fetchProducts(appState);
       const resp = res as ApiResponse;
 
@@ -19,7 +23,12 @@ function App() {
     if (appState.query !== "") {
       fetchItems();
     }
-  }, [appState.query, appState.price, appState.categoryName]);
+  }, [
+    appState.query,
+    appState.filters.price,
+    appState.filters.categoryName,
+    appState.filters.isHybridSearch,
+  ]);
 
   return (
     <>

@@ -5,15 +5,18 @@ import { Product } from "./services/http";
 interface AppContextType {
   appState: AppState;
   setQuery: (query: string) => void;
-  setCategoryName: (categoryName: string) => void;
-  setPrice: (price: PriceFilter) => void;
+  setFilters: (filters: AppFilter) => void;
   setProducts: (products: Product[]) => void;
+}
+export interface AppFilter {
+  isHybridSearch: boolean;
+  categoryName: string;
+  price: PriceFilter;
 }
 export interface AppState {
   products: Product[];
   query: string;
-  categoryName: string;
-  price: PriceFilter;
+  filters: AppFilter;
 }
 export interface PriceFilter {
   priceGte: number;
@@ -23,20 +26,25 @@ export interface PriceFilter {
 const initialState: AppState = {
   products: [],
   query: "",
-  categoryName: "",
-  price: { priceGte: 0, priceLte: 1000 },
+  filters: {
+    isHybridSearch: true,
+    categoryName: "",
+    price: { priceGte: 0, priceLte: 1000 },
+  },
 };
 
 const defaultContext: AppContextType = {
   appState: {
     products: [],
     query: "",
-    categoryName: "",
-    price: { priceGte: 0, priceLte: 1000 },
+    filters: {
+      isHybridSearch: true,
+      categoryName: "",
+      price: { priceGte: 0, priceLte: 1000 },
+    },
   },
   setQuery: () => {},
-  setCategoryName: () => {},
-  setPrice: () => {},
+  setFilters: () => {},
   setProducts: () => {},
 };
 
@@ -48,11 +56,9 @@ export function AppProvider({ children }: PropsWithChildren) {
   const setQuery = (query: string) => {
     setAppState({ ...appState, query });
   };
-  const setCategoryName = (categoryName: string) => {
-    setAppState({ ...appState, categoryName });
-  };
-  const setPrice = (price: PriceFilter) => {
-    setAppState({ ...appState, price });
+
+  const setFilters = (filters: AppFilter) => {
+    setAppState({ ...appState, filters });
   };
 
   const setProducts = (products: Product[]) => {
@@ -61,7 +67,12 @@ export function AppProvider({ children }: PropsWithChildren) {
 
   return (
     <AppContext.Provider
-      value={{ appState, setQuery, setPrice, setCategoryName, setProducts }}
+      value={{
+        appState,
+        setQuery,
+        setProducts,
+        setFilters,
+      }}
     >
       {children}
     </AppContext.Provider>

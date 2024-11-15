@@ -1,24 +1,39 @@
-import { Button, Slider } from "@nextui-org/react";
+import { Button, Input, Slider } from "@nextui-org/react";
 import { FormEvent, useContext, useState } from "react";
+import { Checkbox } from "@nextui-org/react";
+
 import AppContext from "../context";
 
 export default function Filters() {
-  const { appState, setPrice } = useContext(AppContext);
+  const { appState, setFilters } = useContext(AppContext);
   const [pricesFilter, setPricesFilter] = useState([
-    appState.price.priceGte,
-    appState.price.priceLte,
+    appState.filters.price.priceGte,
+    appState.filters.price.priceLte,
   ]);
+  const [isHybridSearch, setIsHybridSearch] = useState(
+    appState.filters.isHybridSearch
+  );
+  const [category, setCategory] = useState(appState.filters.categoryName);
+
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setPrice({ priceGte: pricesFilter[0], priceLte: pricesFilter[1] });
+    setFilters({
+      isHybridSearch,
+      price: { priceGte: pricesFilter[0], priceLte: pricesFilter[1] },
+      categoryName: category,
+    });
   };
   const handleChange = (value: number | number[]) => {
     const prices = value as number[];
     setPricesFilter(prices);
   };
   return (
-    <div className="flex flex-col">
-      <form onSubmit={handleFormSubmit}>
+    <div>
+      <form onSubmit={handleFormSubmit} className="flex flex-col space-y-10">
+        <Checkbox isSelected={isHybridSearch} onValueChange={setIsHybridSearch}>
+          Hybrid search
+        </Checkbox>
+        <Input value={category} onValueChange={setCategory} label="Category" />
         <Slider
           label="Price Range"
           step={10}

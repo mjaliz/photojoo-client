@@ -3,7 +3,6 @@ import { AppState } from "../context";
 
 export interface Product {
   id: string;
-  score: number;
   metadata: {
     name: string;
     current_price: number;
@@ -24,19 +23,24 @@ export interface ApiError {
 
 let baseUrl = "https://api-photojoo.liara.run";
 if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-  baseUrl = "https://api-photojoo.liara.run";
+  baseUrl = "http://localhost:8000";
 }
 
 export const fetchProducts = async (
-  query: AppState
+  state: AppState
 ): Promise<ApiResponse | ApiError> => {
   try {
     let filtersQuery = "";
-    if (query.price.priceLte > 0) {
-      filtersQuery += `&price_gte=${query.price.priceGte}&price_lte=${query.price.priceLte}`;
+    filtersQuery += `&keyword_search=${state.filters.isHybridSearch}`;
+    if (state.filters.price.priceLte > 0) {
+      filtersQuery += `&price_gte=${state.filters.price.priceGte}&price_lte=${state.filters.price.priceLte}`;
     }
+    if (state.filters.categoryName !== "") {
+      filtersQuery += `&category_name=${state.filters.categoryName}`;
+    }
+
     const { data } = await axios.get<ApiResponse>(
-      `${baseUrl}/search/?query=${query.query}${filtersQuery}`
+      `${baseUrl}/search/?query=${state.query}${filtersQuery}`
     );
 
     return data;
