@@ -1,16 +1,26 @@
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext } from "react";
 import { Navbar, NavbarContent, Input } from "@nextui-org/react";
 import { SearchIcon } from "../icons/SearchIcon";
 
 import AppContext from "../context";
+import { fetchProducts } from "../services/http";
 
 export default function AppNavbar() {
-  const { setQuery } = useContext(AppContext);
-  const [input, setInput] = useState("");
-  const handleFormSubmit = (e: FormEvent) => {
+  const { appState, setQuery, setReqStatus, setProducts } =
+    useContext(AppContext);
+  const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (input !== "") {
-      setQuery(input);
+    if (appState.query !== "") {
+      setReqStatus({ idle: false, pending: true, failed: false });
+      const res = await fetchProducts(appState);
+
+      if ("matches" in res) {
+        setReqStatus({ idle: false, pending: false, failed: false });
+        setProducts(res.matches);
+      }
+      if ("message" in res) {
+        setReqStatus({ idle: false, pending: false, failed: true });
+      }
     }
   };
   return (
@@ -29,8 +39,8 @@ export default function AppNavbar() {
             size="md"
             startContent={<SearchIcon size={18} />}
             type="search"
-            value={input}
-            onValueChange={setInput}
+            value={appState.query}
+            onValueChange={setQuery}
           />
         </form>
       </NavbarContent>

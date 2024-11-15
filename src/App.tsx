@@ -28,7 +28,6 @@ function App() {
       fetchItems();
     }
   }, [
-    appState.query,
     appState.filters.price,
     appState.filters.categoryName,
     appState.filters.isHybridSearch,
